@@ -68,14 +68,16 @@ export class BookingService {
   }
 
   cancelBooking(bookingId) {
-    return this.bookings.pipe(
+    return this.http.delete(
+      `https://maxionicplaces.firebaseio.com/bookings/${bookingId}.json`
+    ).pipe(
+      switchMap(() => {
+        return this.bookings;
+      }),
       take(1),
-      delay(1000),
-      tap(
-        bookings => {
-          this._bookings.next(bookings.filter(b => b.id !== bookingId));
-        }
-      )
+      tap(bookings => {
+        this._bookings.next(bookings.filter(b => b.id !== bookingId));
+      })
     );
   }
 
